@@ -10,9 +10,12 @@ const ValidationErrorTypes = {
 
 export function validateMinMax(value, min, max, field, t) {
   let error;
+  if ([null].includes(value)) {
+    return
+  }
 
   switch (true) {
-    case value !== '' && min !== false && max !== false && (value < min || value > max):
+    case min !== false && max !== false && (value < min || value > max):
       error = {
         type: ValidationErrorTypes.RANGE,
         message: t('editor.editorControlPane.widget.range', {
@@ -22,7 +25,7 @@ export function validateMinMax(value, min, max, field, t) {
         }),
       };
       break;
-    case value !== '' && min !== false && value < min:
+    case min !== false && value < min:
       error = {
         type: ValidationErrorTypes.RANGE,
         message: t('editor.editorControlPane.widget.min', {
@@ -31,7 +34,7 @@ export function validateMinMax(value, min, max, field, t) {
         }),
       };
       break;
-    case value !== '' && max !== false && value > max:
+    case max !== false && value > max:
       error = {
         type: ValidationErrorTypes.RANGE,
         message: t('editor.editorControlPane.widget.max', {
@@ -65,7 +68,7 @@ export default class NumberControl extends React.Component {
   };
 
   static defaultProps = {
-    value: '',
+    value: null,
   };
 
   handleChange = e => {
@@ -76,7 +79,7 @@ export default class NumberControl extends React.Component {
     if (!isNaN(value)) {
       onChange(value);
     } else {
-      onChange('');
+      onChange(null);
     }
   };
 
