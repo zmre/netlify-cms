@@ -35,7 +35,7 @@ const rules = () => ({
     use: 'svg-inline-loader',
   }),
   fonts: () => ({
-    test: /\.(woff(2)?)?$/,
+    test: /\.woff2?$/,
     include: ['typeface-inter'].map(moduleNameToPath),
     use: [
       {
