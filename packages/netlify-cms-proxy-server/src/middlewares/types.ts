@@ -52,12 +52,13 @@ export type PublishUnpublishedEntryParams = {
   slug: string;
 };
 
-export type Entry = { slug: string; path: string; raw: string; newPath?: string };
+export type DataFile = { slug: string; path: string; raw: string; newPath?: string };
 
 export type Asset = { path: string; content: string; encoding: 'base64' };
 
 export type PersistEntryParams = {
-  entries: Entry[];
+  entry?: DataFile;
+  dataFiles?: DataFile[];
   assets: Asset[];
   options: {
     collectionName?: string;

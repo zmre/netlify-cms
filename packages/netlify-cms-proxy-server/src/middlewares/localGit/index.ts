@@ -26,7 +26,7 @@ import {
   PersistMediaParams,
   DeleteFileParams,
   UpdateUnpublishedEntryStatusParams,
-  Entry,
+  DataFile,
   GetMediaFileParams,
   DeleteEntryParams,
   UnpublishedEntryDataFileParams,
@@ -74,19 +74,23 @@ type GitOptions = {
 const commitEntry = async (
   git: simpleGit.SimpleGit,
   repoPath: string,
-  entries: Entry[],
+  dataFiles: DataFile[],
   assets: Asset[],
   commitMessage: string,
 ) => {
   // save entry content
-  await Promise.all(entries.map(e => writeFile(path.join(repoPath, e.path), e.raw)));
+  await Promise.all(
+    dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
+  );
   // save assets
   await Promise.all(
     assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
-  if (entries.every(e => e.newPath)) {
+  if (dataFiles.every(dataFile => dataFile.newPath)) {
     await Promise.all(
-      entries.map(e => move(path.join(repoPath, e.path), path.join(repoPath, e.newPath!))),
+      dataFiles.map(dataFile =>
+        move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!)),
+      ),
     );
   }
 
@@ -276,13 +280,19 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entries, assets, options } = body.params as PersistEntryParams;
+          const {
+            entry,
+            dataFiles = [entry as DataFile],
+            assets,
+            options,
+          } = body.params as PersistEntryParams;
+
           if (!options.useWorkflow) {
             await runOnBranch(git, branch, async () => {
-              await commitEntry(git, repoPath, entries, assets, options.commitMessage);
+              await commitEntry(git, repoPath, dataFiles, assets, options.commitMessage);
             });
           } else {
-            const slug = entries[0].slug;
+            const slug = dataFiles[0].slug;
             const collection = options.collectionName as string;
             const contentKey = generateContentKey(collection, slug);
             const cmsBranch = branchFromContentKey(contentKey);
@@ -300,7 +310,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
                 d => d.binary && !assets.map(a => a.path).includes(d.path),
               );
               await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
-              await commitEntry(git, repoPath, entries, assets, options.commitMessage);
+              await commitEntry(git, repoPath, dataFiles, assets, options.commitMessage);
 
               // add status for new entries
               if (!branchExists) {
