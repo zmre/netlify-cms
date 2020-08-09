@@ -89,3 +89,10 @@ export type DeleteFileParams = {
     commitMessage: string;
   };
 };
+
+export type DeleteFilesParams = {
+  paths: string[];
+  options: {
+    commitMessage: string;
+  };
+};
