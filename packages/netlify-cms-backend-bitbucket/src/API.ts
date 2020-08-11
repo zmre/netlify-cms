@@ -9,7 +9,6 @@ import {
   APIError,
   ApiRequest,
   AssetProxy,
-  Entry,
   PersistOptions,
   readFile,
   CMS_BRANCH_PREFIX,
@@ -27,6 +26,7 @@ import {
   requestWithBackoff,
   readFileMetadata,
   throwOnConflictingBranches,
+  DataFile,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
 import { oneLine } from 'common-tags';
@@ -434,11 +434,11 @@ export default class API {
         // delete the file
         formData.append('files', file.path);
       } else if (file.newPath) {
-        const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
+        const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
         toMove.push({ from: file.path, to: file.newPath, contentBlob });
       } else {
         // add/modify the file
-        const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
+        const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
         // Third param is filename header, in case path is `message`, `branch`, etc.
         formData.append(file.path, contentBlob, basename(file.path));
       }
@@ -499,11 +499,11 @@ export default class API {
     return files;
   }
 
-  async persistFiles(entries: Entry[] | null, mediaFiles: AssetProxy[], options: PersistOptions) {
-    const files = entries ? [...entries, ...mediaFiles] : mediaFiles;
-    const entry = entries ? entries[0] : null;
+  async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = [...dataFiles, ...mediaFiles];
     if (options.useWorkflow) {
-      return this.editorialWorkflowGit(files, entry as Entry, options);
+      const slug = dataFiles[0].slug;
+      return this.editorialWorkflowGit(files, slug, options);
     } else {
       return this.uploadFiles(files, { commitMessage: options.commitMessage, branch: this.branch });
     }
@@ -585,8 +585,12 @@ export default class API {
     return diffs;
   }
 
-  async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
+  async editorialWorkflowGit(
+    files: (DataFile | AssetProxy)[],
+    slug: string,
+    options: PersistOptions,
+  ) {
+    const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
@@ -618,9 +622,11 @@ export default class API {
     }
   }
 
-  deleteFile = (path: string, message: string) => {
+  deleteFiles = (paths: string[], message: string) => {
     const body = new FormData();
-    body.append('files', path);
+    paths.forEach(path => {
+      body.append('files', path);
+    });
     body.append('branch', this.branch);
     if (message) {
       body.append('message', message);

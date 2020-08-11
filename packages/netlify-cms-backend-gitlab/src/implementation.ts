@@ -260,11 +260,11 @@ export default class GitLab implements Implementation {
     };
   }
 
-  async persistEntry(entries: Entry[], mediaFiles: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entry: Entry, options: PersistOptions) {
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.persistFiles(entries, mediaFiles, options),
+      () => this.api!.persistFiles(entry.dataFiles, entry.assets, options),
       'Failed to acquire persist entry lock',
     );
   }
@@ -274,7 +274,7 @@ export default class GitLab implements Implementation {
 
     const [id] = await Promise.all([
       getBlobSHA(fileObj),
-      this.api!.persistFiles(null, [mediaFile], options),
+      this.api!.persistFiles([], [mediaFile], options),
     ]);
 
     const { path } = mediaFile;
@@ -291,8 +291,8 @@ export default class GitLab implements Implementation {
     };
   }
 
-  deleteFile(path: string, commitMessage: string) {
-    return this.api!.deleteFile(path, commitMessage);
+  deleteFiles(paths: string[], commitMessage: string) {
+    return this.api!.deleteFiles(paths, commitMessage);
   }
 
   traverseCursor(cursor: Cursor, action: string) {
