@@ -81,7 +81,7 @@ export default class MarkdownControl extends React.Component {
           resolveWidget={resolveWidget}
           pendingFocus={pendingFocus && this.setFocusReceived}
           t={t}
-          isDisabled
+          isDisabled={isDisabled}
         />
       </div>
     );
