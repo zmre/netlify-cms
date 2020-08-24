@@ -3099,18 +3099,7 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@testing-library/dom@^7.17.1":
-  version "7.22.2"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.22.2.tgz#6deaa828500993cc94bdd62875c251b5b5b70d69"
-  integrity sha512-taxURh+4Lwr//uC1Eghat95aMnTlI4G4ETosnZK0wliwHWdutLDVKIvHXAOYdXGdzrBAy1wNhSGmNBbZ72ml4g==
-  dependencies:
-    "@babel/runtime" "^7.10.3"
-    "@types/aria-query" "^4.2.0"
-    aria-query "^4.2.2"
-    dom-accessibility-api "^0.5.0"
-    pretty-format "^25.5.0"
-
-"@testing-library/dom@^7.22.2":
+"@testing-library/dom@^7.17.1", "@testing-library/dom@^7.22.2":
   version "7.22.2"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.22.2.tgz#6deaa828500993cc94bdd62875c251b5b5b70d69"
   integrity sha512-taxURh+4Lwr//uC1Eghat95aMnTlI4G4ETosnZK0wliwHWdutLDVKIvHXAOYdXGdzrBAy1wNhSGmNBbZ72ml4g==
@@ -7144,11 +7133,6 @@ doctrine@^3.0.0:
   integrity sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==
   dependencies:
     esutils "^2.0.2"
-
-dom-accessibility-api@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/dom-accessibility-api/-/dom-accessibility-api-0.5.0.tgz#fddffd04e178796e241436c3f21be2f89c91afac"
-  integrity sha512-eCVf9n4Ni5UQAFc2+fqfMPHdtiX7DA0rLakXgNBZfXNJzEbNo3MQIYd+zdYpFBqAaGYVrkd8leNSLGPrG4ODmA==
 
 dom-accessibility-api@^0.5.0:
   version "0.5.0"
@@ -17343,10 +17327,10 @@ ts-jest@^24.3.0:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-loader@^6.2.1:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-6.2.2.tgz#dffa3879b01a1a1e0a4b85e2b8421dc0dfff1c58"
-  integrity sha512-HDo5kXZCBml3EUPcc7RlZOV/JGlLHwppTLEHb3SHnr5V7NXD4klMEkrhJe5wgRbaWsSXi+Y1SIBN/K9B6zWGWQ==
+ts-loader@^8.0.0:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-8.0.2.tgz#ee73ca9350f745799396fff8578ba29b1e95616b"
+  integrity sha512-oYT7wOTUawYXQ8XIDsRhziyW0KUEV38jISYlE+9adP6tDtG+O5GkRe4QKQXrHVH4mJJ88DysvEtvGP65wMLlhg==
   dependencies:
     chalk "^2.3.0"
     enhanced-resolve "^4.0.0"
